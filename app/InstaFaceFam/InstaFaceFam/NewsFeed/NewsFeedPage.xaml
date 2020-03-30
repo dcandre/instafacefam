@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
+             xmlns:local="clr-namespace:InstaFaceFam.NewsFeed" x:Class="InstaFaceFam.NewsFeed.NewsFeedPage" x:Name="Page">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:StringNullOrEmptyBoolConverter x:Key="StringNullOrEmptyBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout BackgroundColor="#f5f6f7">
+        <StackLayout AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">            
+            <AbsoluteLayout>
+                <Image Source="background.jpg" Aspect="Fill" HeightRequest="330" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
+                <StackLayout Padding="0,50,0,0" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"> 
+                    <Image Source="logo.png" HeightRequest="50" />
+                    <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Editor Placeholder="Hey!  What's up?" Text="{Binding MessageEditorText, Mode=TwoWay}" BackgroundColor="#8a5fc7" TextColor="White" Margin="20, 0, 20, 0" MaxLength="110" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+                    <Button Text="{Binding PhotoUploadButtonText}" BackgroundColor="#8a5fc7" FontAttributes="Bold" TextColor="#23bd64" Margin="20, 5, 5, 0" Command="{Binding PostPhotoButtonClicked}" Grid.Row="1" Grid.Column="0"></Button>
+                    <Button Text="{Binding MessageUploadButtonText}" BackgroundColor="#8a5fc7" FontAttributes="Bold" TextColor="#23bd64" Margin="5, 5, 20, 0" Command="{Binding PostMessageButtonClicked}" Grid.Row="1" Grid.Column="1"></Button>
+                    </Grid>
+                </StackLayout>                
+            </AbsoluteLayout>
+            <RefreshView x:Name="NewsFeedRefreshView" Command="{Binding RefreshViewRefreshingCommand}" CommandParameter="{x:Reference NewsFeedRefreshView}">
+                <CollectionView ItemsSource="{Binding NewsFeedPosts}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout>
+                                <Image 
+                                   Source="{Binding ImageUrl}"
+                                   IsVisible="{Binding ImageUrl, Converter={StaticResource StringNullOrEmptyBoolConverter}}"
+                                   Aspect="AspectFill"
+                                   HeightRequest="200"
+                                   Margin="20, 0, 20, 0" />
+                                <StackLayout BackgroundColor="White" Margin="20, 0, 20, 0" >
+                                    <Label TextColor="Gray" Padding="5, 5, 5, 5" Text="{Binding Message}" IsVisible="{Binding Message, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+                                    <StackLayout x:Name="PostCognitiveData" IsVisible="false">
+                                        <Label TextColor="Gray" Padding="5, 5, 5, 5" Text="{Binding Caption}" IsVisible="{Binding Caption, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+                                        <Label TextColor="Gray" Padding="5, 5, 5, 5" Text="{Binding DescriptionTags}" IsVisible="{Binding DescriptionTags, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+                                        <Label TextColor="Gray" Padding="5, 5, 5, 5" Text="{Binding Celebrities}" IsVisible="{Binding Celebrities, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+                                        <Label TextColor="Gray" Padding="5, 5, 5, 5" Text="{Binding Landmarks}" IsVisible="{Binding Landmarks, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+                                        <Label TextColor="Gray" Padding="5, 5, 5, 5" Text="{Binding Brands}" IsVisible="{Binding Brands, Converter={StaticResource StringNullOrEmptyBoolConverter}}" />
+                                    </StackLayout>
+                                    <Button TextColor="#23bd64" Text="......." Command="{Binding Source={x:Reference Page}, Path=BindingContext.MoreButtonClicked}" CommandParameter="{x:Reference PostCognitiveData}" />
+                                </StackLayout>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </StackLayout>
+        <StackLayout IsVisible="{Binding IsActivityIndicatorRunning}" BackgroundColor="White" Opacity="0.8"
+            AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <ActivityIndicator Color="Black" IsRunning="{Binding IsActivityIndicatorRunning}" HorizontalOptions="CenterAndExpand"
+                VerticalOptions="CenterAndExpand" />
+        </StackLayout>
+    </AbsoluteLayout>
+</ContentPage>
